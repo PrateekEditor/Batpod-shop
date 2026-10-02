@@ -8,6 +8,7 @@ const LINKS = [
   { href: '/c/biker', label: 'Bike & Rider' },
   { href: '/c/tabletop', label: 'Tabletop' },
   { href: '/c/daily', label: 'Daily Fixes' },
+  { href: '/custom', label: 'Custom print' },
 ];
 
 export default function Header() {

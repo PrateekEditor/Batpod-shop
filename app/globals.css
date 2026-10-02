@@ -422,3 +422,13 @@ hr.rule { border: 0; height: 1px; background: var(--rule); margin: 0; }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
 }
+
+/* ---------- custom quote page ---------- */
+.card-block {
+  background: var(--card);
+  border: 1px solid var(--rule-soft);
+  border-radius: 4px;
+  padding: 18px;
+  min-width: 0;
+}
+.card-block .field small { line-height: 1.3; }

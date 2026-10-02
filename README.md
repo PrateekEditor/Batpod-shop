@@ -62,3 +62,15 @@ Shoot the bike pieces on the bike. The product photo is doing more selling than 
 ## Caching
 
 Catalog pages revalidate every 60 seconds. Long enough that a burst of visitors from a video doesn't hammer the free Atlas tier, short enough that a stock change you make in the admin appears while you are still looking at the page. Prices are never cached.
+
+## Custom print page
+
+`/custom` lets someone bring their own model and get a price in a few seconds.
+
+The file **never leaves their computer**. The browser reads its name, size and type and sends only that, which is enough to sanity-check the request and carries none of the storage, scanning and privacy obligations that accepting real uploads brings. They email the model once there is a firm price.
+
+Three deliberate choices:
+
+- **The price is a range, not a number.** A single figure implies a precision nobody has before slicing. The range and the "this is a ceiling" note set the expectation that it will be revised.
+- **Every dropdown comes from the server.** `GET /api/custom/options` supplies the values, so the form can never offer something the estimator rejects.
+- **There is a way out.** "Not what you were expecting?" opens their mail app with the whole specification already written into the body. A customer whose job does not fit the form is a customer worth talking to, not one to lose.
