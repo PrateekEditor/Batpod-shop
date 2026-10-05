@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getProduct } from '../../../lib/api';
+import { getProduct, API_URL } from '../../../lib/api';
 import AddToCart from '../../../components/AddToCart';
 import VolumeBreaks from '../../../components/VolumeBreaks';
 import ProductCard from '../../../components/ProductCard';
@@ -37,7 +37,8 @@ export default async function ProductPage({ params }) {
     return (
       <div className="container empty">
         <h1>Could not load this product</h1>
-        <p>The API did not respond. Try again in a moment.</p>
+        <p>The API did not respond.</p>
+        <p className="mono" style={{ fontSize: 13, color: 'var(--ink-3)' }}>tried: {API_URL}</p>
       </div>
     );
   }

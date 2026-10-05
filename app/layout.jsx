@@ -1,5 +1,6 @@
 import './globals.css';
 import { CartProvider } from '../lib/cart';
+import { AuthProvider } from '../lib/auth';
 import Header from '../components/Header';
 
 export const metadata = {
@@ -28,6 +29,7 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body>
+        <AuthProvider>
         <CartProvider>
           <Header />
           <main>{children}</main>
@@ -38,6 +40,7 @@ export default function RootLayout({ children }) {
             </div>
           </footer>
         </CartProvider>
+        </AuthProvider>
       </body>
     </html>
   );

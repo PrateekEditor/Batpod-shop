@@ -1,17 +1,34 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useCart } from '../../lib/cart';
+import { useAuth, getChannel } from '../../lib/auth';
 import { placeOrder, rupees } from '../../lib/api';
 
 export default function CartPage() {
   const { lines, quote, loading, hydrated, setQuantity, remove, clear, couponCode, setCouponCode } = useCart();
+  const { user, token } = useAuth();
   const [coupon, setCoupon] = useState('');
   const [customer, setCustomer] = useState({ name: '', phone: '', email: '', address: '', city: '', pincode: '' });
   const [placing, setPlacing] = useState(false);
   const [placed, setPlaced] = useState(null);
   const [error, setError] = useState('');
+
+  // Signed in? Fill in what we already know rather than making them type it
+  // again. They can still change any of it.
+  useEffect(() => {
+    if (!user) return;
+    setCustomer((c) => ({
+      ...c,
+      name: c.name || user.name || '',
+      email: c.email || user.email || '',
+      phone: c.phone || user.phone || '',
+      address: c.address || (user.address && user.address.line1) || '',
+      city: c.city || (user.address && user.address.city) || '',
+      pincode: c.pincode || (user.address && user.address.pincode) || '',
+    }));
+  }, [user]);
 
   if (!hydrated) {
     return (
@@ -59,7 +76,8 @@ export default function CartPage() {
     setError('');
     setPlacing(true);
     try {
-      const result = await placeOrder({ customer, lines, couponCode });
+      const { channel, channelDetail } = getChannel();
+      const result = await placeOrder({ customer, lines, couponCode, channel, channelDetail }, token);
       setPlaced(result);
       clear();
     } catch (err) {

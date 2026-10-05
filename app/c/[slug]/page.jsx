@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getCategories, getProducts } from '../../../lib/api';
+import { getCategories, getProducts, API_URL } from '../../../lib/api';
 import ProductCard from '../../../components/ProductCard';
 import RecentlyViewed from '../../../components/RecentlyViewed';
 
@@ -31,7 +31,8 @@ export default async function CategoryPage({ params, searchParams }) {
     return (
       <div className="container empty">
         <h1>Could not load this range</h1>
-        <p>The API did not respond. Try again in a moment.</p>
+        <p>The API did not respond.</p>
+        <p className="mono" style={{ fontSize: 13, color: 'var(--ink-3)' }}>tried: {API_URL}</p>
       </div>
     );
   }
