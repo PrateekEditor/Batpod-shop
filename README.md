@@ -1,5 +1,7 @@
 # batpod-shop
 
+**Live shop:** https://batpodshop.vercel.app
+
 The customer-facing storefront. Next.js App Router, server-rendered so Google indexes your product pages and link previews work when you drop a product URL in a video description.
 
 ## Running it locally
