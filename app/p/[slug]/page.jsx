@@ -1,12 +1,29 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getProduct, API_URL } from '../../../lib/api';
+import { getProduct, getProducts, API_URL } from '../../../lib/api';
+import Dimensions from '../../../components/Dimensions';
 import AddToCart from '../../../components/AddToCart';
 import VolumeBreaks from '../../../components/VolumeBreaks';
 import ProductCard from '../../../components/ProductCard';
 import RecentlyViewed from '../../../components/RecentlyViewed';
 
+/**
+ * Prerendered for every product in the catalogue and refreshed every minute,
+ * so opening a product is a static page, not a server render that waits on
+ * the API. A product added after the last build renders on first request and
+ * is then cached like the rest.
+ */
 export const revalidate = 60;
+export const dynamicParams = true;
+
+export async function generateStaticParams() {
+  try {
+    const { items } = await getProducts({ limit: 200 });
+    return items.map((p) => ({ slug: p.slug }));
+  } catch {
+    return [];
+  }
+}
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
@@ -54,16 +71,7 @@ export default async function ProductPage({ params }) {
         </nav>
 
         <div className="pdp">
-          <div className="gallery">
-            {product.images && product.images[0] ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={product.images[0]} alt={product.name} />
-            ) : (
-              <span className="mono" style={{ color: 'var(--ink-3)', fontSize: 12, letterSpacing: '0.1em' }}>
-                {product.sku}
-              </span>
-            )}
-          </div>
+          <Dimensions product={product} />
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 20, minWidth: 0 }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>

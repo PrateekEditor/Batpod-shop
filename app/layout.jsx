@@ -2,6 +2,8 @@ import './globals.css';
 import { CartProvider } from '../lib/cart';
 import { AuthProvider } from '../lib/auth';
 import Header from '../components/Header';
+import { ThemeProvider, THEME_BOOT_SCRIPT } from '../lib/theme';
+import { TransitionProvider } from '../lib/transitions';
 
 export const metadata = {
   title: {
@@ -19,8 +21,10 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Applies the saved theme before the first paint, so dark mode never flashes white. */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
@@ -29,6 +33,8 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body>
+        <ThemeProvider>
+        <TransitionProvider>
         <AuthProvider>
         <CartProvider>
           <Header />
@@ -41,6 +47,8 @@ export default function RootLayout({ children }) {
           </footer>
         </CartProvider>
         </AuthProvider>
+        </TransitionProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

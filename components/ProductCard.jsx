@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import TransitionLink from './TransitionLink';
 import { rupees } from '../lib/api';
 
 const LABELS = {
@@ -13,8 +13,8 @@ export default function ProductCard({ product }) {
   const state = product.availability || (product.stockOnHand > 0 ? 'in-stock' : 'sold-out');
 
   return (
-    <Link href={`/p/${product.slug}`} className="product-card">
-      <div className="thumb">
+    <TransitionLink href={`/p/${product.slug}`} className="product-card">
+      <div className="thumb" style={{ viewTransitionName: `product-${product.slug}` }}>
         {product.images && product.images[0] ? (
           // Plain <img>: product photos come from wherever you upload them and
           // next/image would need every host allowlisted first.
@@ -32,6 +32,6 @@ export default function ProductCard({ product }) {
           <span className={`badge ${state}`}>{LABELS[state] || state}</span>
         </div>
       </div>
-    </Link>
+    </TransitionLink>
   );
 }

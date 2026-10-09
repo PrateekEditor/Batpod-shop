@@ -5,6 +5,8 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { useCart } from '../lib/cart';
 import { useAuth } from '../lib/auth';
+import ThemeToggle from './ThemeToggle';
+import TransitionLink from './TransitionLink';
 
 const LINKS = [
   { href: '/c/biker', label: 'Bike & Rider' },
@@ -101,10 +103,11 @@ export default function Header() {
         </Link>
         <nav className="nav">
           {LINKS.map((l) => (
-            <Link key={l.href} href={l.href} className={pathname === l.href ? 'active' : undefined}>
+            <TransitionLink key={l.href} href={l.href} className={pathname === l.href ? 'active' : undefined}>
               {l.label}
-            </Link>
+            </TransitionLink>
           ))}
+          <ThemeToggle />
           <AccountMenu />
           <Link href="/cart" className="cart-pill" aria-label="Open cart">
             Cart

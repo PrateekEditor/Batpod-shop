@@ -441,12 +441,17 @@ hr.rule { border: 0; height: 1px; background: var(--rule); margin: 0; }
 }
 .hero-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1.1fr) minmax(200px, 0.75fr) minmax(0, 0.95fr);
   gap: 28px;
   align-items: center;
 }
-@media (max-width: 860px) {
+@media (max-width: 1000px) {
+  .hero-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .hero-art { grid-column: 2; grid-row: 1 / span 2; }
+}
+@media (max-width: 640px) {
   .hero-grid { grid-template-columns: 1fr; gap: 20px; }
+  .hero-art { grid-column: 1; grid-row: auto; max-width: 260px; margin: 0 auto; }
 }
 .hero-copy { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
 .hero-copy h1 {
@@ -625,3 +630,220 @@ hr.rule { border: 0; height: 1px; background: var(--rule); margin: 0; }
   gap: 6px;
 }
 .order-row .top { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: baseline; }
+
+
+/* ======================================================================
+   Page transitions
+   The browser cross-fades between pages; a product card morphs into its
+   gallery, and the range tab bar morphs between tabs. Only a left-click on
+   a TransitionLink opens one; everything else navigates as before.
+   ====================================================================== */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.16s;
+  animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
+}
+::view-transition-old(root) { animation-name: vt-out; }
+::view-transition-new(root) { animation-name: vt-in; }
+@keyframes vt-out { to { opacity: 0; transform: translateY(-4px); } }
+@keyframes vt-in { from { opacity: 0; transform: translateY(6px); } }
+/* the sticky header and the tab strip stay put while the page below them changes */
+.site-header { view-transition-name: site-header; }
+.range-tabs-wrap { view-transition-name: range-tabs; }
+::view-transition-old(site-header), ::view-transition-new(site-header),
+::view-transition-old(range-tabs), ::view-transition-new(range-tabs) { animation: none; }
+
+/* ---------- range tabs ---------- */
+.range-tabs-wrap {
+  position: sticky;
+  top: 62px;
+  z-index: 15;
+  background: var(--card);
+  border-bottom: 1px solid var(--rule);
+}
+.range-tabs { position: relative; display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+.range-tabs::-webkit-scrollbar { display: none; }
+.range-tab {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 14px 16px 12px;
+  font-family: var(--f-display);
+  font-weight: 600;
+  font-size: 14.5px;
+  color: var(--ink-2);
+  white-space: nowrap;
+  border-bottom: 3px solid transparent;
+  transition: color 0.15s ease;
+}
+.range-tab small { font-size: 11px; color: var(--ink-3); }
+.range-tab:hover, .range-tab[data-active='true'] { color: var(--ink); }
+.range-tab-bar {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  background: var(--mark);
+  border-radius: 2px 2px 0 0;
+  opacity: 0;
+  transition: transform 0.28s cubic-bezier(0.2, 0, 0, 1), width 0.28s cubic-bezier(0.2, 0, 0, 1), opacity 0.2s ease;
+}
+.range-tab-bar.ready { opacity: 1; }
+.tab-skeleton { width: 110px; height: 44px; }
+.line-skeleton { height: 14px; border-radius: 3px; background: linear-gradient(90deg, var(--rule-soft), var(--card), var(--rule-soft)); background-size: 200% 100%; animation: shimmer 1.4s linear infinite; }
+.tab-skeleton { display: inline-block; border-radius: 3px; background: linear-gradient(90deg, var(--rule-soft), var(--card), var(--rule-soft)); background-size: 200% 100%; animation: shimmer 1.4s linear infinite; margin: 4px 6px; }
+
+/* ---------- range header ---------- */
+.range-head { border-bottom: 1px solid var(--rule-soft); background: var(--card); }
+.range-head-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(220px, 1fr); gap: 24px; align-items: center; padding-block: 30px 22px; }
+@media (max-width: 760px) {
+  .range-head-grid { grid-template-columns: 1fr; }
+  .range-art { max-width: 300px; }
+}
+.range-copy { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.range-copy h1 { font-size: clamp(26px, 4.6vw, 38px); font-weight: 700; }
+.range-copy p { color: var(--ink-2); max-width: 58ch; }
+.range-art .scene { width: 100%; max-height: 230px; }
+.sort-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+.sort-row .tag { background: none; cursor: pointer; font-family: var(--f-body); }
+.sort-row .tag.on { color: var(--ink); }
+
+/* the grid re-sorts with a short settle, cards staggered */
+.grid-cell { animation: card-in 0.32s cubic-bezier(0.2, 0, 0, 1) both; min-width: 0; }
+@keyframes card-in { from { opacity: 0; transform: translateY(8px); } }
+
+/* ---------- hero art and range chips ---------- */
+.hero-art { display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 0; }
+.hero-art .scene { width: 100%; max-width: 260px; }
+.hero-art-caption { font-size: 11px; color: var(--ink-3); letter-spacing: 0.08em; text-transform: uppercase; }
+.range-chip {
+  grid-template-columns: 56px minmax(0, 1fr) auto;
+  grid-template-areas: 'art name count' 'art tag count';
+}
+.range-chip span.range-chip-art { grid-area: art; width: 52px; height: 46px; display: grid; place-items: center; overflow: visible; }
+.range-chip .range-chip-art .scene { width: 56px; height: 46px; }
+
+/* ---------- the scenes ---------- */
+.scene { display: block; height: auto; overflow: visible; }
+.scene .led { animation: led 1.4s ease-in-out infinite; }
+@keyframes led { 50% { opacity: 0.35; } }
+/* printer: the bed slides in and out along the plate's y axis, the head sweeps the gantry */
+.scene-printer .bed { animation: bed 2.6s ease-in-out infinite alternate; }
+@keyframes bed { to { transform: translate(-12.1px, 7px); } }
+.scene-printer .head { animation: head 1.9s ease-in-out infinite alternate; }
+@keyframes head { to { transform: translate(29.4px, 17px); } }
+.scene-printer .slice { animation: slice 4.5s linear infinite; opacity: 0; }
+@keyframes slice { 0% { opacity: 0; } 12% { opacity: 1; } 88% { opacity: 1; } 100% { opacity: 0; } }
+.scene-printer .spool { animation: spool 3s ease-in-out infinite; }
+@keyframes spool { 50% { transform: translateY(-1.2px); } }
+/* biker: the keyring swings from its hook */
+.scene-biker .keyring { animation: swing 2.4s ease-in-out infinite alternate; }
+@keyframes swing { from { transform: rotate(-7deg); } to { transform: rotate(7deg); } }
+.scene-biker .helmet { animation: settle 5s ease-in-out infinite; }
+@keyframes settle { 50% { transform: translateY(-1px); } }
+/* tabletop: the die drops into the tower and lands in the tray; the dragon ripples */
+.scene-tabletop .die { animation: die-in 3.2s cubic-bezier(0.4, 0, 1, 1) infinite; transform-origin: center; }
+@keyframes die-in { 0% { opacity: 0; transform: translateY(-26px) rotate(-25deg); } 12% { opacity: 1; } 42% { opacity: 1; transform: translateY(0) rotate(0); } 52% { opacity: 0; transform: translateY(18px); } 100% { opacity: 0; } }
+.scene-tabletop .die-out { animation: die-out 3.2s ease-out infinite; }
+@keyframes die-out { 0%, 58% { opacity: 0; transform: translateY(-10px); } 68% { opacity: 1; transform: translateY(2px); } 74% { transform: translateY(0); } 100% { opacity: 1; } }
+.scene-tabletop .dragon-seg { animation: ripple 1.6s ease-in-out infinite; }
+@keyframes ripple { 50% { transform: translateY(-3px); } }
+/* daily: the cable pulses through the clips, the headphones sway */
+.scene-daily .cable-pulse { stroke-dasharray: 18 220; animation: cable 2.8s linear infinite; }
+@keyframes cable { to { stroke-dashoffset: -238; } }
+.scene-daily .clip { animation: clip 2.8s ease-in-out infinite; }
+@keyframes clip { 50% { transform: translateY(-0.8px); } }
+.scene-daily .phones { transform-origin: 68% 30%; animation: sway 3.4s ease-in-out infinite alternate; }
+@keyframes sway { from { transform: rotate(-3deg); } to { transform: rotate(3deg); } }
+.scene-daily .leaf { transform-origin: 50% 100%; animation: sway 4s ease-in-out infinite alternate; }
+
+/* ---------- theme toggle ---------- */
+.theme-toggle {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--rule);
+  background: var(--paper);
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease, transform 0.2s ease;
+}
+.theme-toggle:hover { color: var(--ink); border-color: var(--ink-2); transform: rotate(15deg); }
+
+/* ---------- product views carousel ---------- */
+.views { position: relative; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.views-track {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  aspect-ratio: 1;
+  border: 1px solid var(--rule-soft);
+  border-radius: 4px;
+  background: linear-gradient(135deg, var(--rule-soft), var(--card));
+}
+.views-track::-webkit-scrollbar { display: none; }
+.views-slide { flex: 0 0 100%; scroll-snap-align: start; display: grid; place-items: center; padding: 8%; min-width: 0; }
+.views-slide img { width: 100%; height: 100%; object-fit: cover; border-radius: 4px; }
+.view-svg { width: 100%; height: 100%; overflow: visible; }
+.views-arrow {
+  position: absolute;
+  top: calc(50% - 32px);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--rule);
+  background: var(--card);
+  color: var(--ink);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  opacity: 0.85;
+}
+.views-arrow:hover { opacity: 1; border-color: var(--ink-2); }
+.views-arrow.prev { left: 10px; }
+.views-arrow.next { right: 10px; }
+.views-dots { display: flex; gap: 6px; flex-wrap: wrap; }
+.views-dots button {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--rule-soft);
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+.views-dots button.on { border-color: var(--mark); color: var(--ink); background: var(--mark-soft); }
+/* dimension lines drawn on the views */
+.dim line { stroke: var(--ink-3); stroke-width: 0.7; }
+.dim .dim-main { stroke: var(--structure); stroke-width: 0.9; }
+.dim-text { font-family: var(--f-mono); font-size: 8.5px; fill: var(--ink); paint-order: stroke; stroke: var(--card); stroke-width: 3px; }
+
+/* ---------- dimensions panel ---------- */
+.dimensions { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.dimensions-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.dimensions h2 { font-size: 15px; font-weight: 700; }
+.dimensions .muted { font-size: 12.5px; color: var(--ink-3); }
+.unit-seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; }
+.unit-seg button { border: 0; background: var(--paper); color: var(--ink-2); font-family: var(--f-mono); font-size: 12px; padding: 6px 11px; cursor: pointer; }
+.unit-seg button + button { border-left: 1px solid var(--rule); }
+.unit-seg button.on { background: var(--ink); color: var(--paper); }
+.dim-list { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 0; }
+.dim-list div { border: 1px solid var(--rule-soft); border-radius: 4px; padding: 9px 11px; background: var(--card); }
+.dim-list dt { font-size: 11px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.06em; }
+.dim-list dd { margin: 2px 0 0; font-weight: 700; font-size: 15px; }
+@media (max-width: 480px) { .dim-list { grid-template-columns: repeat(2, 1fr); } }
+.scale-strip { border: 1px solid var(--rule-soft); border-radius: 4px; background: var(--card); padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; }
+.scale-svg { width: 100%; max-height: 190px; overflow: visible; }
+.product-shape { fill: var(--mark); stroke: rgba(20,24,29,0.45); stroke-width: 0.8; }
+.ref-shape { fill: var(--rule-soft); stroke: var(--ink-3); stroke-width: 0.8; stroke-dasharray: 3 2; }
+.scale-label { font-family: var(--f-mono); font-size: 9px; fill: var(--ink-2); }
+
+@media (prefers-reduced-motion: reduce) {
+  .scene *, .range-tab-bar, .grid-cell { animation: none !important; transition: none !important; }
+}

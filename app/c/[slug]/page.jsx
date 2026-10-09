@@ -1,10 +1,34 @@
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getCategories, getProducts, API_URL } from '../../../lib/api';
-import ProductCard from '../../../components/ProductCard';
+import RangeTabs from '../../../components/RangeTabs';
+import CategoryGrid from '../../../components/CategoryGrid';
 import RecentlyViewed from '../../../components/RecentlyViewed';
+import { RangeScene } from '../../../components/scenes/Scenes';
 
+/**
+ * A range page.
+ *
+ * Prerendered at build time and refreshed in the background every minute, so
+ * switching between ranges is a static page served from the edge — not a
+ * server render that waits on the API. Sorting happens in the browser (see
+ * CategoryGrid); the moment this page read the query string it would be
+ * rendered on every request again.
+ */
 export const revalidate = 60;
+export const dynamicParams = true;
+
+const KNOWN = ['biker', 'tabletop', 'daily'];
+
+export async function generateStaticParams() {
+  try {
+    const categories = await getCategories();
+    return categories.map((c) => ({ slug: c.slug }));
+  } catch {
+    // The API was not reachable at build time; prerender the ranges we know
+    // and let anything else render on first request.
+    return KNOWN.map((slug) => ({ slug }));
+  }
+}
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
@@ -18,15 +42,13 @@ export async function generateMetadata({ params }) {
   }
 }
 
-export default async function CategoryPage({ params, searchParams }) {
+export default async function CategoryPage({ params }) {
   const { slug } = await params;
-  const { sort = 'curated' } = (await searchParams) || {};
 
   let categories = [];
   let data = { items: [] };
-
   try {
-    [categories, data] = await Promise.all([getCategories(), getProducts({ category: slug, sort, limit: 40 })]);
+    [categories, data] = await Promise.all([getCategories(), getProducts({ category: slug, limit: 60 })]);
   } catch {
     return (
       <div className="container empty">
@@ -42,42 +64,27 @@ export default async function CategoryPage({ params, searchParams }) {
 
   return (
     <>
-      <section className="container" style={{ paddingBlock: '36px 8px' }}>
-        <span className="eyebrow">{category.productCount} products</span>
-        <h1 style={{ fontSize: 'clamp(26px, 5vw, 40px)', fontWeight: 700, marginTop: 8 }}>{category.name}</h1>
-        <p style={{ color: 'var(--ink-2)', maxWidth: '60ch', marginTop: 10 }}>{category.description}</p>
-      </section>
+      <div className="range-tabs-wrap">
+        <div className="container">
+          <RangeTabs categories={categories} />
+        </div>
+      </div>
 
-      <section className="container section" style={{ paddingTop: 28 }}>
-        <div className="section-head">
-          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-            {[
-              { key: 'curated', label: 'Curated' },
-              { key: 'priceAsc', label: 'Price low to high' },
-              { key: 'priceDesc', label: 'Price high to low' },
-              { key: 'newest', label: 'Newest' },
-            ].map((s) => (
-              <Link
-                key={s.key}
-                href={`/c/${slug}?sort=${s.key}`}
-                className="tag"
-                style={sort === s.key ? { borderColor: 'var(--mark)', color: 'var(--ink)' } : undefined}
-              >
-                {s.label}
-              </Link>
-            ))}
+      <section className="range-head" style={{ '--accent': category.accent }}>
+        <div className="container range-head-grid">
+          <div className="range-copy">
+            <span className="eyebrow">{category.productCount} products · {category.tagline}</span>
+            <h1>{category.name}</h1>
+            <p>{category.description}</p>
+          </div>
+          <div className="range-art" aria-hidden="true">
+            <RangeScene slug={slug} />
           </div>
         </div>
+      </section>
 
-        {data.items.length === 0 ? (
-          <p className="notice">Nothing in this range yet. Check back after the next print run.</p>
-        ) : (
-          <div className="grid">
-            {data.items.map((p) => (
-              <ProductCard key={p.slug} product={p} />
-            ))}
-          </div>
-        )}
+      <section className="container section" style={{ paddingTop: 22 }}>
+        <CategoryGrid items={data.items} accent={category.accent} />
       </section>
 
       <div className="container">

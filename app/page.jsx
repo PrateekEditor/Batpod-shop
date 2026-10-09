@@ -3,6 +3,8 @@ import { getCategories, getProducts, API_URL } from '../lib/api';
 import ProductCard from '../components/ProductCard';
 import RecommendedRail from '../components/RecommendedRail';
 import RecentlyViewed from '../components/RecentlyViewed';
+import TransitionLink from '../components/TransitionLink';
+import { PrinterScene, RangeScene } from '../components/scenes/Scenes';
 
 export const revalidate = 60;
 
@@ -53,13 +55,19 @@ export default async function HomePage() {
             <p>Made and packed by one person who rides. Small runs, real materials.</p>
           </div>
 
+          <div className="hero-art" aria-hidden="true">
+            <PrinterScene />
+            <span className="hero-art-caption mono">Printing now on the A1</span>
+          </div>
+
           <div className="hero-ranges">
             {categories.map((c) => (
-              <Link key={c.slug} href={`/c/${c.slug}`} className="range-chip" style={{ borderLeftColor: c.accent }}>
+              <TransitionLink key={c.slug} href={`/c/${c.slug}`} className="range-chip" style={{ borderLeftColor: c.accent }}>
+                <span className="range-chip-art" aria-hidden="true"><RangeScene slug={c.slug} /></span>
                 <strong>{c.name}</strong>
                 <span>{c.tagline}</span>
                 <span className="count mono">{c.productCount} products</span>
-              </Link>
+              </TransitionLink>
             ))}
           </div>
         </div>
