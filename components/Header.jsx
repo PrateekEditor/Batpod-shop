@@ -8,11 +8,14 @@ import { useAuth } from '../lib/auth';
 import ThemeToggle from './ThemeToggle';
 import TransitionLink from './TransitionLink';
 
-const LINKS = [
+const RANGE_LINKS = [
   { href: '/c/biker', label: 'Bike & Rider' },
   { href: '/c/tabletop', label: 'Tabletop' },
   { href: '/c/daily', label: 'Daily Fixes' },
+];
+const OTHER_LINKS = [
   { href: '/custom', label: 'Custom print' },
+  { href: '/contact', label: 'Contact' },
 ];
 
 function AccountMenu() {
@@ -102,7 +105,8 @@ export default function Header() {
           BATPOD<span>.</span>LABS
         </Link>
         <nav className="nav">
-          {LINKS.map((l) => (
+          {/* On a range page the tab strip below already lists the ranges; saying it twice is noise. */}
+          {[...(pathname.startsWith('/c/') ? [] : RANGE_LINKS), ...OTHER_LINKS].map((l) => (
             <TransitionLink key={l.href} href={l.href} className={pathname === l.href ? 'active' : undefined}>
               {l.label}
             </TransitionLink>

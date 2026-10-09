@@ -4,6 +4,8 @@ import { AuthProvider } from '../lib/auth';
 import Header from '../components/Header';
 import { ThemeProvider, THEME_BOOT_SCRIPT } from '../lib/theme';
 import { TransitionProvider } from '../lib/transitions';
+import ShopGate from '../components/ShopGate';
+import SiteFooter from '../components/SiteFooter';
 
 export const metadata = {
   title: {
@@ -38,13 +40,8 @@ export default function RootLayout({ children }) {
         <AuthProvider>
         <CartProvider>
           <Header />
-          <main>{children}</main>
-          <footer className="site-footer">
-            <div className="container inner">
-              <span>Batpod Labs — printed to order in Pune.</span>
-              <span className="mono">Prices in ₹, inclusive of taxes.</span>
-            </div>
-          </footer>
+          <main><ShopGate>{children}</ShopGate></main>
+          <SiteFooter />
         </CartProvider>
         </AuthProvider>
         </TransitionProvider>
