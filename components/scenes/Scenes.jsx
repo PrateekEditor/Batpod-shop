@@ -185,7 +185,43 @@ export function DailyScene({ className = '' }) {
   );
 }
 
-export const SCENES = { biker: BikerScene, tabletop: TabletopScene, daily: DailyScene };
+
+// ----------------------------------------------------------------- minis
+
+/** A shelf of tiny characters: a gecko on the edge, a duck, a ghost that bobs, a pumpkin. */
+export function MinisScene({ className = '' }) {
+  const shelf = box(0, 0, 0, 100, 30, 4);
+  return (
+    <svg className={`scene scene-minis ${className}`} viewBox={viewBoxFor(-4, -2, 104, 34, 40, 4)} role="img" aria-label="A shelf of tiny printed characters: a gecko, a duck, a ghost and a pumpkin">
+      <Shadow pts={[[100, 0, 0], [108, 2, 0], [108, 32, 0], [100, 30, 0]]} />
+      <Faces b={shelf} colour={{ top: '#d8c3a0', right: '#c4ad87', left: '#ab9570' }} />
+      {/* gecko: a chain of shrinking segments curling along the shelf edge */}
+      {[0, 1, 2, 3, 4, 5, 6].map((i) => (
+        <Faces key={i} b={box(6 + i * 6.5, 22 - Math.sin(i * 0.9) * 4, 4, 6 - i * 0.5, 5 - i * 0.4, 4 - i * 0.3)} colour="#2f7d7d" className="gecko-seg" style={{ animationDelay: `${i * 0.12}s` }} />
+      ))}
+      <Faces b={box(1, 22, 4, 7, 6, 4.5)} colour="#2f7d7d" className="gecko-seg" style={{ animationDelay: '-0.12s' }} />
+      {/* duck with glasses */}
+      <g className="duck">
+        <Faces b={box(56, 10, 4, 12, 11, 9)} colour="#c9971f" />
+        <Faces b={box(60, 6, 11, 8, 8, 8)} colour="#c9971f" />
+        <polygon points={onLeft(14, 61, 67, 14, 16.5)} fill="#2a2f36" />
+        <polygon points={onLeft(14, 62, 66, 12, 13.5)} fill="#a8402f" />
+      </g>
+      {/* ghost: bobs up and down */}
+      <g className="ghost">
+        <Faces b={box(78, 12, 4, 10, 9, 13)} colour="#eef1f5" stroke="#9aa4b0" />
+        <polygon points={onLeft(21, 80, 82.5, 11, 13.5)} fill="#2a2f36" />
+        <polygon points={onLeft(21, 84, 86.5, 11, 13.5)} fill="#2a2f36" />
+      </g>
+      {/* pumpkin */}
+      <Faces b={box(36, 8, 4, 13, 13, 10)} colour="#c86a2a" />
+      <Faces b={box(41, 13, 14, 3, 3, 3)} colour="#3f8f5f" />
+      {[38, 42, 46].map((x) => <path key={x} d={path([[x, 21, 4], [x, 21, 14]])} stroke="rgba(0,0,0,0.25)" strokeWidth="0.8" />)}
+    </svg>
+  );
+}
+
+export const SCENES = { biker: BikerScene, tabletop: TabletopScene, daily: DailyScene, minis: MinisScene };
 
 export function RangeScene({ slug, className }) {
   const Scene = SCENES[slug];

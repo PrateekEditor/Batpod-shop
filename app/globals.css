@@ -519,7 +519,7 @@ hr.rule { border: 0; height: 1px; background: var(--rule); margin: 0; }
   grid-template-areas: 'name count' 'tag count';
   gap: 0 12px;
   align-items: center;
-  padding: 10px 14px;
+  padding: 8px 14px;
   background: var(--paper);
   border: 1px solid var(--rule-soft);
   border-left: 3px solid var(--mark);
@@ -802,6 +802,12 @@ hr.rule { border: 0; height: 1px; background: var(--rule); margin: 0; }
 .scene-daily .phones { transform-origin: 68% 30%; animation: sway 3.4s ease-in-out infinite alternate; }
 @keyframes sway { from { transform: rotate(-3deg); } to { transform: rotate(3deg); } }
 .scene-daily .leaf { transform-origin: 50% 100%; animation: sway 4s ease-in-out infinite alternate; }
+
+/* minis: the gecko ripples, the ghost bobs, the duck looks around */
+.scene-minis .gecko-seg { animation: ripple 1.5s ease-in-out infinite; }
+.scene-minis .ghost { animation: bob 2.2s ease-in-out infinite alternate; }
+@keyframes bob { to { transform: translateY(-4px); } }
+.scene-minis .duck { transform-origin: 60% 80%; animation: sway 3.6s ease-in-out infinite alternate; }
 
 /* ---------- theme toggle ---------- */
 .theme-toggle {

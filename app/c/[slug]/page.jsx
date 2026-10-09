@@ -17,7 +17,7 @@ import { RangeScene } from '../../../components/scenes/Scenes';
 export const revalidate = 60;
 export const dynamicParams = true;
 
-const KNOWN = ['biker', 'tabletop', 'daily'];
+const KNOWN = ['biker', 'tabletop', 'daily', 'minis'];
 
 export async function generateStaticParams() {
   try {

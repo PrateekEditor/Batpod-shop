@@ -12,6 +12,7 @@ const RANGE_LINKS = [
   { href: '/c/biker', label: 'Bike & Rider' },
   { href: '/c/tabletop', label: 'Tabletop' },
   { href: '/c/daily', label: 'Daily Fixes' },
+  { href: '/c/minis', label: 'Minis' },
 ];
 const OTHER_LINKS = [
   { href: '/custom', label: 'Custom print' },
