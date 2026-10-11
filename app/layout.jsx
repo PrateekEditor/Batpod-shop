@@ -6,6 +6,7 @@ import { ThemeProvider, THEME_BOOT_SCRIPT } from '../lib/theme';
 import { TransitionProvider } from '../lib/transitions';
 import ShopGate from '../components/ShopGate';
 import SiteFooter from '../components/SiteFooter';
+import CookieConsent from '../components/CookieConsent';
 
 export const metadata = {
   title: {
@@ -42,6 +43,7 @@ export default function RootLayout({ children }) {
           <Header />
           <main><ShopGate>{children}</ShopGate></main>
           <SiteFooter />
+          <CookieConsent />
         </CartProvider>
         </AuthProvider>
         </TransitionProvider>

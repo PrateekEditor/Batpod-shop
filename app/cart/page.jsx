@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useCart } from '../../lib/cart';
 import { useAuth, getChannel } from '../../lib/auth';
 import { placeOrder, rupees } from '../../lib/api';
+import { ConfirmAndPay } from '../../components/OrderTimeline';
 
 export default function CartPage() {
   const { lines, quote, loading, hydrated, setQuantity, remove, clear, couponCode, setCouponCode } = useCart();
@@ -13,6 +14,7 @@ export default function CartPage() {
   const [customer, setCustomer] = useState({ name: '', phone: '', email: '', address: '', city: '', pincode: '' });
   const [placing, setPlacing] = useState(false);
   const [placed, setPlaced] = useState(null);
+  const [placedLines, setPlacedLines] = useState([]);
   const [error, setError] = useState('');
 
   // Signed in? Fill in what we already know rather than making them type it
@@ -39,20 +41,27 @@ export default function CartPage() {
   }
 
   if (placed) {
+    const trackHref = user ? `/account/orders/${placed.reference}` : `/track?ref=${placed.reference}`;
     return (
-      <div className="container empty">
-        <h1>Order received</h1>
-        <p>
-          Your reference is <strong className="mono">{placed.reference}</strong>. Save it — you can look it up any
-          time.
-        </p>
-        <p>
-          Nothing has been charged yet. Payment is being added shortly; until then you will get a message to confirm
-          and settle up.
-        </p>
-        <Link href="/" className="btn">
-          Back to the shop
-        </Link>
+      <div className="container placed">
+        <div className="placed-head">
+          <span className="eyebrow">Order received</span>
+          <h1 className="mono">{placed.reference}</h1>
+          <p>
+            Save that reference. {user ? 'It is on your account page with its progress.' : 'You can track it with the phone number or email you gave.'}
+          </p>
+        </div>
+
+        <ConfirmAndPay order={{ ...placed, lines: placedLines }} />
+
+        <div className="wizard-actions">
+          <Link href={trackHref} className="btn ghost">
+            Track this order
+          </Link>
+          <Link href="/" className="btn ghost">
+            Back to the shop
+          </Link>
+        </div>
       </div>
     );
   }
@@ -78,6 +87,7 @@ export default function CartPage() {
     try {
       const { channel, channelDetail } = getChannel();
       const result = await placeOrder({ customer, lines, couponCode, channel, channelDetail }, token);
+      setPlacedLines(lines.map((l) => ({ name: (byslug(l.slug) || {}).name || l.slug, quantity: l.quantity })));
       setPlaced(result);
       clear();
     } catch (err) {

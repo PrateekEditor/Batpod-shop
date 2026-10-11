@@ -16,6 +16,7 @@ export default function SiteFooter() {
           <TransitionLink href="/c/biker">Bike &amp; Rider</TransitionLink>
           <TransitionLink href="/c/tabletop">Tabletop</TransitionLink>
           <TransitionLink href="/c/daily">Daily Fixes</TransitionLink>
+          <TransitionLink href="/c/minis">Minis</TransitionLink>
           <TransitionLink href="/custom">Custom print</TransitionLink>
         </div>
         <div className="footer-col">
@@ -29,7 +30,9 @@ export default function SiteFooter() {
           <h4>Good to know</h4>
           <span>{SITE.hours}</span>
           <span className="mono">Prices in ₹, inclusive of taxes.</span>
-          <TransitionLink href="/account">Your orders</TransitionLink>
+          <TransitionLink href="/track">Track an order</TransitionLink>
+          <TransitionLink href="/account">Your account</TransitionLink>
+          <TransitionLink href="/privacy">What is stored</TransitionLink>
         </div>
       </div>
       <div className="container footer-base">

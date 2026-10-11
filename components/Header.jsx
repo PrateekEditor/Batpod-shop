@@ -75,7 +75,7 @@ function AccountMenu() {
           <Link href="/account" onClick={() => setOpen(false)} role="menuitem">
             Orders &amp; details
           </Link>
-          <Link href="/account#interests" onClick={() => setOpen(false)} role="menuitem">
+          <Link href="/account?tab=preferences" onClick={() => setOpen(false)} role="menuitem">
             What you&rsquo;re into
           </Link>
           <button
