@@ -1,8 +1,8 @@
 # batpod-shop
 
 **Live:** https://batpodshop.vercel.app
-**Repo:** https://github.com/PrateekPatelBluvium9878/Batpod-shop
-**API it talks to:** https://batpod-sever.vercel.app ([batpod-server](https://github.com/PrateekPatelBluvium9878/batpod-sever))
+**Repo:** https://github.com/PrateekEditor/Batpod-shop
+**API it talks to:** https://batpod-sever.vercel.app ([batpod-server](https://github.com/PrateekEditor/batpod-sever))
 
 The customer-facing storefront for Batpod Labs — 3D-printed gear for riders, desks and daily life, designed and printed in Pune on a Bambu Lab A1 Combo. Four ranges: Bike & Rider, Tabletop, Daily Fixes, Minis.
 

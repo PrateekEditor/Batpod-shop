@@ -69,4 +69,4 @@ Vercel, `NEXT_PUBLIC_API_URL` set at build time (it is inlined — change it, re
 
 ## Git
 
-Author `Prateek Patel <prateek.patel@bluvium.com>`. Assistants commit, owner pushes. Run `npm run build` first.
+Author `Prateek Patel <prateekpatel9878@gmail.com>`. Assistants commit, owner pushes. Run `npm run build` first.
