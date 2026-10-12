@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useCart, rememberViewed } from '../lib/cart';
 import { getQuote, rupees } from '../lib/api';
 import { Pressable } from './Motion';
+import { useToast } from './Toast';
 
 /**
  * Buy box.
@@ -15,6 +16,7 @@ import { Pressable } from './Motion';
  */
 export default function AddToCart({ product }) {
   const { add } = useCart();
+  const toast = useToast();
   const [qty, setQty] = useState(1);
   const [livePrice, setLivePrice] = useState(null);
   const [added, setAdded] = useState(false);
@@ -42,6 +44,7 @@ export default function AddToCart({ product }) {
 
   function handleAdd() {
     add(product.slug, qty);
+    toast.show({ text: `${qty > 1 ? `${qty} × ` : ''}${product.name} added`, action: { href: '/cart', label: 'View cart' } });
     setAdded(true);
     window.setTimeout(() => setAdded(false), 2600);
   }

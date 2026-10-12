@@ -1,6 +1,7 @@
 'use client';
 
-import { RANGES, RIDES, USE_FOR, CONTACT } from '../lib/profile';
+import { RIDES, USE_FOR, CONTACT } from '../lib/profile';
+import { useCategories } from '../lib/categories';
 
 /**
  * The optional questions, as tiles and chips rather than dropdowns. Every one
@@ -10,6 +11,7 @@ import { RANGES, RIDES, USE_FOR, CONTACT } from '../lib/profile';
  * `value` = { interests: [], rides: '', bikeModel: '', useFor: [], contactPref: '', offersOptIn: false }
  */
 export default function ProfileQuestions({ value, onChange, showOffers = true }) {
+  const RANGES = useCategories();
   const set = (patch) => onChange({ ...value, ...patch });
   const toggleIn = (key, item) =>
     set({ [key]: value[key].includes(item) ? value[key].filter((x) => x !== item) : [...value[key], item] });

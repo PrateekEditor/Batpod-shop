@@ -9,6 +9,7 @@ import { getStatus } from '../lib/api';
 import ThemeToggle from './ThemeToggle';
 import TransitionLink from './TransitionLink';
 import { motion, AnimatePresence } from './Motion';
+import { useCategories } from '../lib/categories';
 
 /**
  * The header.
@@ -22,12 +23,7 @@ import { motion, AnimatePresence } from './Motion';
  * from the header. The cart stays visible at every width — it is the one
  * thing people reach for.
  */
-const RANGE_LINKS = [
-  { href: '/c/biker', label: 'Bike & Rider', code: 'BK' },
-  { href: '/c/tabletop', label: 'Tabletop', code: 'TT' },
-  { href: '/c/daily', label: 'Daily Fixes', code: 'DF' },
-  { href: '/c/minis', label: 'Minis', code: 'MN' },
-];
+// Range links come from the database (lib/categories); these are the fixed ones.
 const OTHER_LINKS = [
   { href: '/custom', label: 'Custom print', code: 'CP' },
   { href: '/contact', label: 'Contact', code: 'CT' },
@@ -136,6 +132,7 @@ function CartPill({ onNavigate }) {
 export default function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const RANGE_LINKS = useCategories().map((c) => ({ href: `/c/${c.slug}`, label: c.name }));
   const onRange = pathname.startsWith('/c/');
   const links = [...(onRange ? [] : RANGE_LINKS), ...OTHER_LINKS];
   const close = () => setOpen(false);

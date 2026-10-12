@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '../../lib/auth';
-import { passwordProblem, passwordStrength, STRENGTH_LABEL, emailSuggestion, EMAIL_OK, RANGES } from '../../lib/profile';
+import { passwordProblem, passwordStrength, STRENGTH_LABEL, emailSuggestion, EMAIL_OK } from '../../lib/profile';
+import { useCategories } from '../../lib/categories';
 import { setConsent, getConsent } from '../../lib/consent';
 import ProfileQuestions, { EMPTY_PROFILE, splitProfile } from '../../components/ProfileQuestions';
 import { Pressable, PressableLink } from '../../components/Motion';
@@ -292,6 +293,7 @@ function OfferCard({ offer }) {
 }
 
 function NextSteps({ interests }) {
+  const RANGES = useCategories();
   const picks = RANGES.filter((r) => interests.includes(r.slug));
   const list = picks.length ? picks : RANGES.slice(0, 3);
   return (

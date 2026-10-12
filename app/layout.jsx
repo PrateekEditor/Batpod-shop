@@ -8,6 +8,9 @@ import ShopGate from '../components/ShopGate';
 import SiteFooter from '../components/SiteFooter';
 import CookieConsent from '../components/CookieConsent';
 import { MotionProvider } from '../components/Motion';
+import { CategoriesProvider } from '../lib/categories';
+import { ToastProvider } from '../components/Toast';
+import { getCategories } from '../lib/api';
 
 export const metadata = {
   title: {
@@ -23,7 +26,15 @@ export const metadata = {
   },
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  // The ranges drive the nav. Cached for a minute by lib/api; if the API is
+  // down at render time the layout still renders with the built-in list.
+  let categories = [];
+  try {
+    categories = await getCategories();
+  } catch {
+    categories = [];
+  }
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -39,6 +50,8 @@ export default function RootLayout({ children }) {
       <body>
         <ThemeProvider>
         <MotionProvider>
+        <CategoriesProvider categories={categories}>
+        <ToastProvider>
         <TransitionProvider>
         <AuthProvider>
         <CartProvider>
@@ -49,6 +62,8 @@ export default function RootLayout({ children }) {
         </CartProvider>
         </AuthProvider>
         </TransitionProvider>
+        </ToastProvider>
+        </CategoriesProvider>
         </MotionProvider>
         </ThemeProvider>
       </body>

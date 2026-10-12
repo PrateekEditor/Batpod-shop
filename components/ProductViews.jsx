@@ -171,8 +171,9 @@ export default function ProductViews({ product, unit = 'mm' }) {
                 aria-selected={i === index}
                 className={i === index ? 'on' : ''}
                 onClick={() => setIndex(i)}
+                title={s.label}
               >
-                {s.label}
+                {s.kind === 'photo' ? <img src={imageSrc(s.src)} alt="" /> : s.label}
               </button>
             ))}
           </div>

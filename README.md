@@ -93,7 +93,7 @@ Both say "coming soon" until `whatsappNumber` and `upiId` are filled in. When a 
 
 ## Header, motion and layout
 
-The header (`components/Header.jsx`) has numbered mono labels with one indicator that slides between them, a live status pill polled from `/api/status` (green pulse when the A1 is online, amber paused, red offline), and at ≤900 px a hamburger that drops a drawer with the ranges, shop links and account. Primary buttons are `Pressable` / `PressableLink` / `PressableA` from `components/Motion.jsx`, built on [motion](https://motion.dev) (`motion/react`) with a spring lift on hover and press on tap; `MotionConfig reducedMotion="user"` turns it off for people who asked their OS for less movement. The page is 1440 px wide at most with a fluid gutter (`--max`, `--gutter` in `globals.css`).
+The header (`components/Header.jsx`) lists the ranges straight from the database — add a category in the admin and it appears in the tabs, the mobile drawer, the footer and the signup tiles on the next revalidate — as numbered mono labels with one indicator that slides between them, a live status pill polled from `/api/status` (green pulse when the A1 is online, amber paused, red offline), and at ≤900 px a hamburger that drops a drawer with the ranges, shop links and account. Primary buttons are `Pressable` / `PressableLink` / `PressableA` from `components/Motion.jsx`, built on [motion](https://motion.dev) (`motion/react`) with a spring lift on hover and press on tap; `MotionConfig reducedMotion="user"` turns it off for people who asked their OS for less movement. The page is 1440 px wide at most with a fluid gutter (`--max`, `--gutter` in `globals.css`).
 
 ## Consent and personalisation
 

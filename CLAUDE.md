@@ -22,6 +22,8 @@ Owner's terminals: 1 server, 2 shop, 3 admin, 4 other. Say which. **No `# commen
 - **Keep `/c/[slug]` and `/p/[slug]` static.** No `searchParams`, `cookies()`, `headers()` or `fetch(…, {cache:'no-store'})` in those server components — any of them flips the page to per-request rendering and brings back the 1.5 s range switch. Sort/filter in the browser (`CategoryGrid`). Verify with `npm run build`: those routes must show `●` (SSG), not `ƒ`.
 - **Client state lives in `lib/`** (`cart`, `auth`, `consent`, `theme`, `transitions`) as providers mounted in `app/layout.jsx`. Pages are thin.
 - **Don't import a `'use client'` module's non-component exports into a server component.** The export becomes a client reference, not the value. Constants shared both ways live in plain modules (`lib/site.js`, `lib/profile.js`).
+- **Ranges come from the database.** `app/layout.jsx` fetches categories (cached 60 s) into `CategoriesProvider`; `useCategories()` feeds the header tabs, drawer, footer and signup tiles. `lib/profile.js` RANGES is only the fallback. Never hard-code a range list in a component again.
+- **Confirmations are toasts** (`components/Toast.jsx`, `useToast().show({ text, action })`), the way Next.js Commerce and Hydrogen storefronts do it.
 - **Client pages get their metadata from a sibling `layout.jsx`** (`app/cart/layout.jsx` etc.). A `'use client'` page cannot export `metadata`; without the layout the page falls back to the site title.
 - **Primary buttons are `Pressable` (button), `PressableLink` (next/link) or `PressableA` (plain anchor)** from `components/Motion.jsx`. Plain `<button className="btn">` is fine for secondary actions.
 - **Images from the API are paths** (`/api/images/<id>`); render through `imageSrc()` from `lib/api.js`.

@@ -1,8 +1,12 @@
+'use client';
+
 import TransitionLink from './TransitionLink';
 import SocialLinks from './SocialLinks';
 import { SITE } from '../lib/site';
+import { useCategories } from '../lib/categories';
 
 export default function SiteFooter() {
+  const ranges = useCategories();
   return (
     <footer className="site-footer">
       <div className="container footer-grid">
@@ -13,10 +17,9 @@ export default function SiteFooter() {
         </div>
         <div className="footer-col">
           <h4>Shop</h4>
-          <TransitionLink href="/c/biker">Bike &amp; Rider</TransitionLink>
-          <TransitionLink href="/c/tabletop">Tabletop</TransitionLink>
-          <TransitionLink href="/c/daily">Daily Fixes</TransitionLink>
-          <TransitionLink href="/c/minis">Minis</TransitionLink>
+          {ranges.map((r) => (
+            <TransitionLink key={r.slug} href={`/c/${r.slug}`}>{r.name}</TransitionLink>
+          ))}
           <TransitionLink href="/custom">Custom print</TransitionLink>
         </div>
         <div className="footer-col">
