@@ -51,6 +51,8 @@ The server must be running and seeded (`batpod-server`: `npm run seed`, `npm run
 | `/contact` | static | Social links, hours, address |
 | `/privacy` | static | Plain-English list of everything stored, with the personalisation switch |
 
+Client pages carry their `<title>` and description through a sibling `layout.jsx` (a client component cannot export metadata). `app/icon.svg` is the favicon.
+
 `loading.jsx` files under `/c` and `/p` give an instant skeleton while a not-yet-prerendered page renders.
 
 ## How the pieces fit
@@ -85,6 +87,14 @@ There is no payment gateway. After placing an order the customer gets two button
 
 Both say "coming soon" until `whatsappNumber` and `upiId` are filled in. When a gateway is added (Razorpay), `ConfirmAndPay` in `components/OrderTimeline.jsx` is the one place to swap.
 
+## Address and delivery window
+
+`components/AddressFields.jsx` asks for the pincode first: six digits trigger `GET /api/pincode/:pin` on the server (India Post directory), fill city and state, and show a delivery window ("Thu 15 – Sat 17 Oct · 2–4 days by courier after dispatch"). State is a dropdown of the 36 states and UTs (`lib/india.js`), since couriers reject free-text spellings. Both stay editable. Used in the cart and the account's Details tab; orders store `customer.state`.
+
+## Header, motion and layout
+
+The header (`components/Header.jsx`) has numbered mono labels with one indicator that slides between them, a live status pill polled from `/api/status` (green pulse when the A1 is online, amber paused, red offline), and at ≤900 px a hamburger that drops a drawer with the ranges, shop links and account. Primary buttons are `Pressable` / `PressableLink` / `PressableA` from `components/Motion.jsx`, built on [motion](https://motion.dev) (`motion/react`) with a spring lift on hover and press on tap; `MotionConfig reducedMotion="user"` turns it off for people who asked their OS for less movement. The page is 1440 px wide at most with a fluid gutter (`--max`, `--gutter` in `globals.css`).
+
 ## Consent and personalisation
 
 The site sets no cookies. Essentials (cart, theme, sign-in, arrival channel) are kept without asking. The recently-viewed trail and the "picked for you" rail built from it are off until the visitor answers the one-question notice (`components/CookieConsent.jsx`); saying no also wipes the trail. The answer is versioned (`CONSENT_VERSION` in `lib/site.js`) — bump it when the notice changes and everyone is asked again. `/privacy` lists everything and has the switch.
@@ -109,7 +119,7 @@ Range switching was measured at ~1.5 s when range pages were server-rendered per
 
 - **Identity, contact, payment:** everything is in `lib/site.js` — name, city, hours, social handles and links, `whatsappNumber` (digits with country code), `upiId`, `upiName`.
 - **A new range:** seed it on the server, then add the slug to `KNOWN` in `app/c/[slug]/page.jsx`, `RANGES` in `lib/profile.js`, a scene in `components/scenes/Scenes.jsx` (and the `SCENES` map), and a footer link.
-- **Product photos:** set `images[]` on the product in the admin; the gallery falls back to the drawn views (`ProductViews.jsx`) when there are none.
+- **Product photos:** upload them in the admin's product editor (resized and compressed in the browser, stored in the database, served from `/api/images/:id`); the first is the card photo. The gallery falls back to the drawn views (`ProductViews.jsx`) when there are none.
 - **Dimension references** (coin, card, phone, A4): `REFS` in `components/Dimensions.jsx`.
 - **Optional profile questions:** `lib/profile.js` for the choices, `components/ProfileQuestions.jsx` for the layout; keep the keys in step with the server's `models/User.js`.
 - **Order steps and wording:** `STEPS` in `components/OrderTimeline.jsx`.
@@ -121,6 +131,8 @@ Range switching was measured at ~1.5 s when range pages were server-rendered per
 - Next.js App Router: rendering modes, `generateStaticParams`, `revalidate`, `loading.js` — https://nextjs.org/docs/app
 - View Transitions API — https://developer.mozilla.org/en-US/docs/Web/API/View_Transitions_API
 - React 19 — https://react.dev/
+- motion (animation) — https://motion.dev/docs/react
+- India Post pincode API — https://api.postalpincode.in/
 - WhatsApp click-to-chat links — https://faq.whatsapp.com/5913398998672934
 - NPCI UPI deep linking (`upi://pay` parameters) — https://www.npci.org.in/what-we-do/upi/product-overview
 - Razorpay checkout (for later) — https://razorpay.com/docs/payments/payment-gateway/web-integration/standard/

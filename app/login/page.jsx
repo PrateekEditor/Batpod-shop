@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../lib/auth';
+import { Pressable } from '../../components/Motion';
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -58,9 +59,9 @@ export default function LoginPage() {
 
         {error && <p className="notice bad">{error}</p>}
 
-        <button type="submit" className="btn" disabled={busy}>
+        <Pressable type="submit" className="btn" disabled={busy}>
           {busy ? 'Signing in…' : 'Sign in'}
-        </button>
+        </Pressable>
       </form>
 
       <p className="auth-alt">

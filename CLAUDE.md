@@ -22,6 +22,9 @@ Owner's terminals: 1 server, 2 shop, 3 admin, 4 other. Say which. **No `# commen
 - **Keep `/c/[slug]` and `/p/[slug]` static.** No `searchParams`, `cookies()`, `headers()` or `fetch(…, {cache:'no-store'})` in those server components — any of them flips the page to per-request rendering and brings back the 1.5 s range switch. Sort/filter in the browser (`CategoryGrid`). Verify with `npm run build`: those routes must show `●` (SSG), not `ƒ`.
 - **Client state lives in `lib/`** (`cart`, `auth`, `consent`, `theme`, `transitions`) as providers mounted in `app/layout.jsx`. Pages are thin.
 - **Don't import a `'use client'` module's non-component exports into a server component.** The export becomes a client reference, not the value. Constants shared both ways live in plain modules (`lib/site.js`, `lib/profile.js`).
+- **Client pages get their metadata from a sibling `layout.jsx`** (`app/cart/layout.jsx` etc.). A `'use client'` page cannot export `metadata`; without the layout the page falls back to the site title.
+- **Primary buttons are `Pressable` (button), `PressableLink` (next/link) or `PressableA` (plain anchor)** from `components/Motion.jsx`. Plain `<button className="btn">` is fine for secondary actions.
+- **Images from the API are paths** (`/api/images/<id>`); render through `imageSrc()` from `lib/api.js`.
 - **`useSearchParams` needs a Suspense boundary at build time.** Read `window.location.search` in a `useEffect` instead (see `app/account/page.jsx`, `app/track/page.jsx`).
 - **Hydration:** anything read from `localStorage` goes into state in a `useEffect`, never in a `useState` initialiser (server renders the default; client must match on first paint).
 - **CSS:** one file, `app/globals.css`, sections headed with `/* ---------- name ---------- */`. Custom properties on `:root`; dark overrides under both the media query and `[data-theme='dark']`. Watch specificity — a past bug: `.range-chip span` beat `.range-chip-art` and overlapped text.
@@ -55,6 +58,8 @@ The owner's Linux bridge VM cannot run macOS-built binaries, so builds happen in
 | Contact details, WhatsApp number, UPI ID, social links | `lib/site.js` only |
 | Change the shop-closed screens | `components/ShopGate.jsx` |
 | Dimension reference objects | `REFS` in `components/Dimensions.jsx` |
+| Delivery estimate wording / state list | `components/AddressFields.jsx`, `lib/india.js`; zones live on the server in `src/pincode.js` |
+| Header links, status pill text, drawer | `components/Header.jsx` (`RANGE_LINKS`, `OTHER_LINKS`, `MORE_LINKS`) |
 
 ## Deployment facts
 

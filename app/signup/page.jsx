@@ -6,6 +6,7 @@ import { useAuth } from '../../lib/auth';
 import { passwordProblem, passwordStrength, STRENGTH_LABEL, emailSuggestion, EMAIL_OK, RANGES } from '../../lib/profile';
 import { setConsent, getConsent } from '../../lib/consent';
 import ProfileQuestions, { EMPTY_PROFILE, splitProfile } from '../../components/ProfileQuestions';
+import { Pressable, PressableLink } from '../../components/Motion';
 
 /**
  * Signup, in three short steps.
@@ -183,9 +184,9 @@ export default function SignupPage() {
 
           {error && <p className="notice bad" role="alert">{error}</p>}
 
-          <button type="submit" className="btn" disabled={busy}>
+          <Pressable type="submit" className="btn" disabled={busy}>
             Continue
-          </button>
+          </Pressable>
           <p className="tiny muted">
             By continuing you agree to the shop keeping your cart and sign-in in this browser.{' '}
             <Link href="/privacy">What is stored</Link>.
@@ -225,15 +226,15 @@ export default function SignupPage() {
           {error && <p className="notice bad" role="alert">{error}</p>}
 
           <div className="wizard-actions">
-            <button type="button" className="btn ghost" onClick={() => setStep(0)} disabled={busy}>
+            <Pressable type="button" className="btn ghost" onClick={() => setStep(0)} disabled={busy}>
               Back
-            </button>
-            <button type="button" className="btn ghost" onClick={() => create(true)} disabled={busy}>
+            </Pressable>
+            <Pressable type="button" className="btn ghost" onClick={() => create(true)} disabled={busy}>
               Skip all
-            </button>
-            <button ref={firstField} type="submit" className="btn" disabled={busy}>
+            </Pressable>
+            <Pressable ref={firstField} type="submit" className="btn" disabled={busy}>
               {busy ? 'Creating…' : 'Create account'}
-            </button>
+            </Pressable>
           </div>
         </form>
       )}
@@ -277,9 +278,9 @@ function OfferCard({ offer }) {
       <span className="eyebrow">Your first-order code</span>
       <div className="offer-row">
         <strong className="mono code">{offer.code}</strong>
-        <button type="button" className="btn ghost small" onClick={copy}>
+        <Pressable type="button" className="btn ghost small" onClick={copy}>
           {copied ? 'Copied' : 'Copy'}
-        </button>
+        </Pressable>
       </div>
       <p>
         {offer.text}
@@ -305,12 +306,12 @@ function NextSteps({ interests }) {
         ))}
       </div>
       <div className="wizard-actions">
-        <Link href="/account" className="btn ghost">
+        <PressableLink href="/account" className="btn ghost">
           Your account
-        </Link>
-        <Link href="/" className="btn">
+        </PressableLink>
+        <PressableLink href="/" className="btn">
           Go to the shop
-        </Link>
+        </PressableLink>
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { trackOrder, rupees } from '../../lib/api';
 import { useAuth } from '../../lib/auth';
 import OrderTimeline, { ConfirmAndPay, STATUS_LABEL } from '../../components/OrderTimeline';
+import { Pressable } from '../../components/Motion';
 
 /**
  * Track an order without an account.
@@ -90,9 +91,9 @@ export default function TrackPage() {
 
         {error && <p className="notice bad" role="alert">{error}</p>}
 
-        <button type="submit" className="btn" disabled={busy}>
+        <Pressable type="submit" className="btn" disabled={busy}>
           {busy ? 'Looking…' : 'Find my order'}
-        </button>
+        </Pressable>
       </form>
 
       {order && (

@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getProduct, getProducts, API_URL } from '../../../lib/api';
+import { getProduct, getProducts, API_URL, imageSrc } from '../../../lib/api';
 import Dimensions from '../../../components/Dimensions';
 import AddToCart from '../../../components/AddToCart';
 import VolumeBreaks from '../../../components/VolumeBreaks';
@@ -35,7 +35,7 @@ export async function generateMetadata({ params }) {
       openGraph: {
         title: product.name,
         description: product.shortDescription,
-        images: product.images && product.images.length ? [product.images[0]] : undefined,
+        images: product.images && product.images.length ? [imageSrc(product.images[0])] : undefined,
       },
     };
   } catch {

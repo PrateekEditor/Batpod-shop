@@ -7,6 +7,7 @@ import { TransitionProvider } from '../lib/transitions';
 import ShopGate from '../components/ShopGate';
 import SiteFooter from '../components/SiteFooter';
 import CookieConsent from '../components/CookieConsent';
+import { MotionProvider } from '../components/Motion';
 
 export const metadata = {
   title: {
@@ -37,6 +38,7 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         <ThemeProvider>
+        <MotionProvider>
         <TransitionProvider>
         <AuthProvider>
         <CartProvider>
@@ -47,6 +49,7 @@ export default function RootLayout({ children }) {
         </CartProvider>
         </AuthProvider>
         </TransitionProvider>
+        </MotionProvider>
         </ThemeProvider>
       </body>
     </html>

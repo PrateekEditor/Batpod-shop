@@ -1,5 +1,5 @@
 import TransitionLink from './TransitionLink';
-import { rupees } from '../lib/api';
+import { rupees, imageSrc } from '../lib/api';
 
 const LABELS = {
   'in-stock': 'In stock',
@@ -19,7 +19,7 @@ export default function ProductCard({ product }) {
           // Plain <img>: product photos come from wherever you upload them and
           // next/image would need every host allowlisted first.
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={product.images[0]} alt={product.name} loading="lazy" />
+          <img src={imageSrc(product.images[0])} alt={product.name} loading="lazy" />
         ) : (
           <span className="placeholder">{product.sku}</span>
         )}

@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { API_URL, rupees } from '../../lib/api';
+import { Pressable } from '../../components/Motion';
 
 /**
  * Custom print quote.
@@ -46,8 +47,10 @@ export default function CustomPrintPage() {
 
   useEffect(() => {
     fetch(`${API_URL}/api/custom/options`)
-      .then((r) => r.json())
-      .then(setOptions)
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error('options'))))
+      // Only trust a response that has the shape we render; a 404 page or an
+      // error body must not take the whole page down.
+      .then((o) => (o && Array.isArray(o.acceptedFileTypes) ? setOptions(o) : Promise.reject(new Error('shape'))))
       .catch(() => setCalcError('Could not reach the estimator. Try again in a moment.'));
   }, []);
 
@@ -356,9 +359,9 @@ export default function CustomPrintPage() {
 
               {submitError && <p className="notice bad">{submitError}</p>}
 
-              <button type="submit" className="btn" disabled={submitting || !e}>
+              <Pressable type="submit" className="btn" disabled={submitting || !e}>
                 {submitting ? 'Sending…' : 'Request this print'}
-              </button>
+              </Pressable>
             </form>
           </section>
         </div>

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { getStatus } from '../lib/api';
 import SocialLinks from './SocialLinks';
+import { Pressable } from './Motion';
 
 /**
  * Stands between the reader and the shop when the shop is not open.
@@ -79,7 +80,7 @@ export default function ShopGate({ children }) {
         <p className="mono">Back around {new Date(status.until).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}</p>
       )}
       <SocialLinks size="large" />
-      <button type="button" className="btn ghost" onClick={() => window.location.reload()}>Try again</button>
+      <Pressable type="button" className="btn ghost" onClick={() => window.location.reload()}>Try again</Pressable>
     </div>
   );
 }

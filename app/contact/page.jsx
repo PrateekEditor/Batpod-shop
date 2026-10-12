@@ -17,6 +17,14 @@ export default function ContactPage() {
       </div>
       <div className="contact-cards">
         <div className="card-block">
+          <h3>Reach us</h3>
+          <p className="contact-lines">
+            {SITE.phone ? <a href={`tel:${SITE.phone.replace(/[^\d+]/g, '')}`}>{SITE.phone}</a> : <span>Phone number coming soon</span>}
+            {SITE.email ? <a href={`mailto:${SITE.email}`}>{SITE.email}</a> : <span>Email coming soon</span>}
+            {SITE.whatsappNumber ? <a href={`https://wa.me/${SITE.whatsappNumber}`} target="_blank" rel="noopener noreferrer">WhatsApp</a> : <span>WhatsApp coming soon</span>}
+          </p>
+        </div>
+        <div className="card-block">
           <h3>Where</h3>
           <p>{SITE.city}. No walk-in counter yet &mdash; orders ship by courier.</p>
         </div>

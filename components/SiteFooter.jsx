@@ -7,7 +7,7 @@ export default function SiteFooter() {
     <footer className="site-footer">
       <div className="container footer-grid">
         <div className="footer-col">
-          <div className="brand">BATPOD<span>.</span>LABS</div>
+          <TransitionLink href="/" className="brand" aria-label="Batpod Labs home">BATPOD<span>.</span>LABS</TransitionLink>
           <p>{SITE.tagline}. Small runs, real materials, packed by the person who designed them.</p>
           <SocialLinks />
         </div>
@@ -22,8 +22,8 @@ export default function SiteFooter() {
         <div className="footer-col">
           <h4>Contact</h4>
           <span>{SITE.city}</span>
-          <span>{SITE.email || 'Email coming soon'}</span>
-          <span>{SITE.phone || 'WhatsApp number coming soon'}</span>
+          {SITE.email ? <a href={`mailto:${SITE.email}`}>{SITE.email}</a> : <span>Email coming soon</span>}
+          {SITE.phone ? <a href={`tel:${SITE.phone.replace(/[^\d+]/g, '')}`}>{SITE.phone}</a> : <span>WhatsApp number coming soon</span>}
           <TransitionLink href="/contact">Contact us &rarr;</TransitionLink>
         </div>
         <div className="footer-col">

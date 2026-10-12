@@ -8,6 +8,8 @@ import { rupees } from '../../lib/api';
 import ProfileQuestions, { mergeProfile, splitProfile } from '../../components/ProfileQuestions';
 import { PersonalisationToggle } from '../../components/CookieConsent';
 import { STATUS_LABEL } from '../../components/OrderTimeline';
+import AddressFields from '../../components/AddressFields';
+import { Pressable, PressableLink } from '../../components/Motion';
 
 /**
  * The account, in three tabs: orders (the reason most people come back),
@@ -50,9 +52,9 @@ export default function AccountPage() {
           <h1>{user.name ? `Hi, ${user.name.split(' ')[0]}.` : 'Your account'}</h1>
           <p className="mono muted" style={{ fontSize: 12 }}>{user.email}</p>
         </div>
-        <button type="button" className="btn ghost small" onClick={() => { logout(); router.push('/'); }}>
+        <Pressable type="button" className="btn ghost small" onClick={() => { logout(); router.push('/'); }}>
           Sign out
-        </button>
+        </Pressable>
       </div>
 
       <div className="tabs" role="tablist">
@@ -83,7 +85,7 @@ function OrdersTab() {
       <div className="notice">
         Nothing yet. Orders you place while signed in show up here with their progress.
         <div style={{ marginTop: 10 }}>
-          <Link href="/" className="btn ghost small">Start browsing</Link>
+          <PressableLink href="/" className="btn ghost small">Start browsing</PressableLink>
         </div>
       </div>
     );
@@ -139,24 +141,28 @@ function DetailsTab() {
   const [d, setD] = useState({
     name: user.name || '',
     phone: user.phone || '',
-    address: { line1: '', city: '', pincode: '', ...(user.address || {}) },
+    address: { line1: '', city: '', state: '', pincode: '', ...(user.address || {}) },
   });
   const { save, saved, error, busy } = useSaver((v) => v);
-  const addr = (patch) => setD({ ...d, address: { ...d.address, ...patch } });
 
   return (
     <form className="card-block" onSubmit={(e) => { e.preventDefault(); save(d); }} style={{ display: 'flex', flexDirection: 'column', gap: 14, maxWidth: 520 }}>
       <p className="muted" style={{ fontSize: 13 }}>Filled into the cart so you do not type it each time. Change any of it there too.</p>
       <label className="field"><span>Name</span><input value={d.name} onChange={(e) => setD({ ...d, name: e.target.value })} autoComplete="name" /></label>
       <label className="field"><span>Phone</span><input value={d.phone} onChange={(e) => setD({ ...d, phone: e.target.value })} inputMode="tel" autoComplete="tel" /></label>
-      <label className="field"><span>Address</span><input value={d.address.line1} onChange={(e) => addr({ line1: e.target.value })} autoComplete="street-address" /></label>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-        <label className="field"><span>City</span><input value={d.address.city} onChange={(e) => addr({ city: e.target.value })} autoComplete="address-level2" /></label>
-        <label className="field"><span>Pincode</span><input value={d.address.pincode} onChange={(e) => addr({ pincode: e.target.value })} inputMode="numeric" autoComplete="postal-code" /></label>
-      </div>
+      <AddressFields
+        value={{ address: d.address.line1, city: d.address.city, state: d.address.state, pincode: d.address.pincode }}
+        onChange={(patch) => {
+          const next = {};
+          if (patch.address !== undefined) next.line1 = patch.address;
+          for (const k of ['city', 'state', 'pincode']) if (patch[k] !== undefined) next[k] = patch[k];
+          setD((cur) => ({ ...cur, address: { ...cur.address, ...next } }));
+        }}
+        compact
+      />
       {error && <p className="notice bad">{error}</p>}
       {saved && <p className="notice good">Saved.</p>}
-      <button className="btn" type="submit" disabled={busy}>{busy ? 'Saving…' : 'Save'}</button>
+      <Pressable className="btn" type="submit" disabled={busy}>{busy ? 'Saving…' : 'Save'}</Pressable>
     </form>
   );
 }
@@ -178,7 +184,7 @@ function PreferencesTab() {
       </fieldset>
       {error && <p className="notice bad">{error}</p>}
       {saved && <p className="notice good">Saved.</p>}
-      <button className="btn" type="submit" disabled={busy}>{busy ? 'Saving…' : 'Save preferences'}</button>
+      <Pressable className="btn" type="submit" disabled={busy}>{busy ? 'Saving…' : 'Save preferences'}</Pressable>
     </form>
   );
 }

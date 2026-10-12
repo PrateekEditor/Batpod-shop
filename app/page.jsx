@@ -5,6 +5,7 @@ import RecommendedRail from '../components/RecommendedRail';
 import RecentlyViewed from '../components/RecentlyViewed';
 import TransitionLink from '../components/TransitionLink';
 import { PrinterScene, RangeScene } from '../components/scenes/Scenes';
+import { PressableLink } from '../components/Motion';
 
 export const revalidate = 60;
 
@@ -100,9 +101,9 @@ export default async function HomePage() {
               <h3>Bring your own model</h3>
               <p>Upload a file, get a price and a date in a few seconds. No account needed.</p>
             </div>
-            <Link href="/custom" className="btn">
+            <PressableLink href="/custom" className="btn">
               Get a quote
-            </Link>
+            </PressableLink>
           </div>
         </section>
       </div>

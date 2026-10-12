@@ -4,14 +4,16 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useCart } from '../../lib/cart';
 import { useAuth, getChannel } from '../../lib/auth';
-import { placeOrder, rupees } from '../../lib/api';
+import { placeOrder, rupees, imageSrc } from '../../lib/api';
 import { ConfirmAndPay } from '../../components/OrderTimeline';
+import AddressFields from '../../components/AddressFields';
+import { Pressable, PressableLink } from '../../components/Motion';
 
 export default function CartPage() {
   const { lines, quote, loading, hydrated, setQuantity, remove, clear, couponCode, setCouponCode } = useCart();
   const { user, token } = useAuth();
   const [coupon, setCoupon] = useState('');
-  const [customer, setCustomer] = useState({ name: '', phone: '', email: '', address: '', city: '', pincode: '' });
+  const [customer, setCustomer] = useState({ name: '', phone: '', email: '', address: '', city: '', state: '', pincode: '' });
   const [placing, setPlacing] = useState(false);
   const [placed, setPlaced] = useState(null);
   const [placedLines, setPlacedLines] = useState([]);
@@ -28,6 +30,7 @@ export default function CartPage() {
       phone: c.phone || user.phone || '',
       address: c.address || (user.address && user.address.line1) || '',
       city: c.city || (user.address && user.address.city) || '',
+      state: c.state || (user.address && user.address.state) || '',
       pincode: c.pincode || (user.address && user.address.pincode) || '',
     }));
   }, [user]);
@@ -55,12 +58,12 @@ export default function CartPage() {
         <ConfirmAndPay order={{ ...placed, lines: placedLines }} />
 
         <div className="wizard-actions">
-          <Link href={trackHref} className="btn ghost">
+          <PressableLink href={trackHref} className="btn ghost">
             Track this order
-          </Link>
-          <Link href="/" className="btn ghost">
+          </PressableLink>
+          <PressableLink href="/" className="btn ghost">
             Back to the shop
-          </Link>
+          </PressableLink>
         </div>
       </div>
     );
@@ -70,10 +73,10 @@ export default function CartPage() {
     return (
       <div className="container empty">
         <h1>Your cart is empty</h1>
-        <p>Three ranges to go through — bike gear, tabletop pieces, and small daily fixes.</p>
-        <Link href="/" className="btn">
+        <p>Four ranges to go through — bike gear, tabletop pieces, daily fixes, and minis.</p>
+        <PressableLink href="/" className="btn">
           Start browsing
-        </Link>
+        </PressableLink>
       </div>
     );
   }
@@ -112,7 +115,7 @@ export default function CartPage() {
               <div className="mini">
                 {q && q.image ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={q.image} alt="" />
+                  <img src={imageSrc(q.image)} alt="" />
                 ) : (
                   <span className="mono" style={{ fontSize: 9, color: 'var(--ink-3)' }}>
                     {q ? q.sku : ''}
@@ -202,29 +205,19 @@ export default function CartPage() {
                 onChange={(e) => setCustomer({ ...customer, email: e.target.value })}
               />
             </label>
-            <label className="field">
-              <span>Pincode</span>
-              <input
-                inputMode="numeric"
-                value={customer.pincode}
-                onChange={(e) => setCustomer({ ...customer, pincode: e.target.value })}
-              />
-            </label>
           </div>
-          <label className="field">
-            <span>Address</span>
-            <textarea
-              rows={3}
-              value={customer.address}
-              onChange={(e) => setCustomer({ ...customer, address: e.target.value })}
-            />
-          </label>
+          <AddressFields
+            value={customer}
+            onChange={(patch) => setCustomer((c) => ({ ...c, ...patch }))}
+            productionDays={quote && quote.lines && quote.lines.some((l) => l.madeToOrder) ? 3 : 1}
+            required
+          />
 
           {error && <p className="notice bad">{error}</p>}
 
-          <button type="submit" className="btn" disabled={placing || loading}>
+          <Pressable type="submit" className="btn" disabled={placing || loading}>
             {placing ? 'Sending…' : 'Place order'}
-          </button>
+          </Pressable>
           <p style={{ fontSize: 12, color: 'var(--ink-3)' }}>
             No payment is taken yet. The order reaches the workshop and you get a message to confirm.
           </p>
@@ -273,9 +266,9 @@ export default function CartPage() {
               onChange={(e) => setCoupon(e.target.value.toUpperCase())}
               style={{ flex: 1, minWidth: 0, padding: '9px 10px', border: '1px solid var(--rule)', borderRadius: 3, background: 'var(--paper)', color: 'var(--ink)', fontFamily: 'var(--f-mono)', fontSize: 13 }}
             />
-            <button type="button" className="btn ghost small" onClick={() => setCouponCode(coupon)}>
+            <Pressable type="button" className="btn ghost small" onClick={() => setCouponCode(coupon)}>
               Apply
-            </button>
+            </Pressable>
           </div>
 
           {quote && quote.coupon && (

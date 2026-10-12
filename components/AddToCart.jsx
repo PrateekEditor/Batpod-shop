@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useCart, rememberViewed } from '../lib/cart';
 import { getQuote, rupees } from '../lib/api';
+import { Pressable } from './Motion';
 
 /**
  * Buy box.
@@ -80,9 +81,9 @@ export default function AddToCart({ product }) {
               +
             </button>
           </div>
-          <button type="button" className="btn" onClick={handleAdd}>
+          <Pressable type="button" className="btn" onClick={handleAdd}>
             Add to cart
-          </button>
+          </Pressable>
         </div>
       )}
 

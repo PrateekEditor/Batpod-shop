@@ -1,4 +1,5 @@
 'use client';
+import { imageSrc } from '../lib/api';
 
 import { useEffect, useRef, useState } from 'react';
 import { P, poly, box, flat, onLeft, onRight, Faces, shade } from './scenes/iso';
@@ -149,7 +150,7 @@ export default function ProductViews({ product, unit = 'mm' }) {
           <div className="views-slide" key={s.key} aria-label={s.label} role="group">
             {s.kind === 'photo' ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={s.src} alt={`${product.name} - ${s.label}`} />
+              <img src={imageSrc(s.src)} alt={`${product.name} - ${s.label}`} />
             ) : (
               <View kind={s.kind} product={product} unit={unit} />
             )}

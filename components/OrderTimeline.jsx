@@ -2,6 +2,7 @@
 
 import { SITE, whatsappLink, upiLink, orderMessage } from '../lib/site';
 import { rupees } from '../lib/api';
+import { PressableA } from './Motion';
 
 /**
  * Where an order is, as a line of steps rather than a status word.
@@ -95,18 +96,18 @@ export function ConfirmAndPay({ order, compact = false }) {
       </div>
       <div className="pay-actions">
         {wa ? (
-          <a className="btn" href={wa} target="_blank" rel="noopener noreferrer">
+          <PressableA className="btn" href={wa} target="_blank" rel="noopener noreferrer">
             Confirm on WhatsApp
-          </a>
+          </PressableA>
         ) : (
           <span className="btn" aria-disabled="true" title="WhatsApp number not set yet">
             WhatsApp number coming soon
           </span>
         )}
         {upi ? (
-          <a className="btn ghost" href={upi}>
+          <PressableA className="btn ghost" href={upi}>
             Pay {rupees(order.total)} by UPI
-          </a>
+          </PressableA>
         ) : (
           <span className="btn ghost" aria-disabled="true" title="UPI ID not set yet">
             UPI details coming soon
